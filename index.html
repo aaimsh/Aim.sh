@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Abdulailah Al Hussayen — aaim.sh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d0c;
+    --panel:#101412;
+    --line:#1c2220;
+    --fg:#d6dcd6;
+    --dim:#7a8a82;
+    --dimmer:#4d5a55;
+    --accent:#7ee2b8;        /* mint terminal green */
+    --accent-2:#f5c267;       /* amber */
+    --warn:#e07a5f;
+    --link:#8ec5ff;
+    --selection:#7ee2b833;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--selection)}
+  a{color:var(--link);text-decoration:none;border-bottom:1px dotted var(--dimmer)}
+  a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  button{font-family:inherit;font-size:inherit;color:inherit;background:transparent;border:1px solid var(--line);padding:6px 10px;cursor:pointer;border-radius:3px}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--line);margin:0}
+
+  /* Window chrome */
+  .shell{max-width:1180px;margin:24px auto;padding:0 18px}
+  .term{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 80px -40px #000, inset 0 0 0 1px #ffffff04}
+  .term-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(#13181600,#0e1211)}
+  .dots{display:flex;gap:6px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#2a3230;border:1px solid #1a201e}
+  .dot.r{background:#3a2422}
+  .dot.y{background:#3a3322}
+  .dot.g{background:#22382e}
+  .term-title{color:var(--dim);font-size:12px;letter-spacing:.04em;flex:1;text-align:center}
+  .term-tabs{display:flex;gap:4px}
+  .tab{padding:3px 9px;font-size:11px;border:1px solid var(--line);border-radius:3px;color:var(--dim);cursor:pointer;user-select:none}
+  .tab.active{color:var(--accent);border-color:#244236;background:#0f1c17}
+  .tab:hover{color:var(--fg)}
+
+  .term-body{padding:24px 28px 36px;min-height:560px}
+  .prompt{color:var(--accent)}
+  .path{color:var(--accent-2)}
+  .arrow{color:var(--dim)}
+  .comment{color:var(--dimmer)}
+  .key{color:var(--accent-2)}
+  .str{color:#b8e3a4}
+  .num{color:#c8a8ff}
+  .kw{color:#f48fb1}
+  .err{color:var(--warn)}
+  .ok{color:var(--accent)}
+  .dim{color:var(--dim)}
+  .em{color:var(--fg);font-weight:500}
+
+  .row{display:flex;gap:8px;align-items:flex-start}
+  .row .prompt-line{white-space:pre}
+  pre,code{font-family:inherit;margin:0}
+  .block{margin:14px 0}
+  .box{border:1px solid var(--line);border-radius:4px;padding:14px 16px;background:#0d1110}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:780px){.grid2{grid-template-columns:1fr}}
+
+  /* ASCII header */
+  .ascii{color:var(--accent);font-size:11px;line-height:1.15;white-space:pre;letter-spacing:0;overflow:hidden}
+  .ascii-sub{color:var(--dim);margin-top:6px}
+
+  /* neofetch-style */
+  .neofetch{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;margin-top:18px}
+  .neofetch .logo{color:var(--accent);white-space:pre;font-size:11px;line-height:1.15}
+  .kv{display:grid;grid-template-columns:max-content 1fr;column-gap:14px;row-gap:2px}
+  .kv .k{color:var(--accent-2)}
+  .kv .v{color:var(--fg)}
+  .stat-strip{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;font-size:12px}
+  .stat-strip .stat{display:flex;flex-direction:column;gap:2px;padding-right:18px;border-right:1px solid #1c2220}
+  .stat-strip .stat:last-child{border-right:none;padding-right:0}
+  .stat-strip .num{color:var(--accent);font-weight:600;font-size:14px;letter-spacing:.02em}
+  .stat-strip .lbl{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+
+  /* Sections */
+  section{margin:30px 0}
+  h2{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--fg)}
+  h2 .h{color:var(--accent)}
+  h2 .arg{color:var(--accent-2)}
+  ul{margin:6px 0;padding-left:18px}
+  ul li{margin:3px 0}
+  ul li::marker{color:var(--dimmer)}
+
+  /* timeline */
+  .job{border-left:1px dashed var(--line);padding:0 0 18px 18px;margin-left:6px;position:relative}
+  .job::before{content:"";position:absolute;left:-4px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px #0f1c17}
+  .job:last-child{padding-bottom:0}
+  .job .meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--dim);font-size:12px}
+  .job .role{color:var(--fg);font-weight:600;margin:2px 0 6px}
+  .job .role .at{color:var(--accent)}
+  .job ul{margin-top:6px}
+  .tag{display:inline-block;border:1px solid var(--line);color:var(--dim);padding:1px 7px;border-radius:3px;font-size:11px;margin:6px 4px 0 0}
+
+  /* command outputs */
+  .out{padding-left:0}
+  .stat{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:780px){.stat{grid-template-columns:repeat(2,1fr)}}
+  .stat .cell{border:1px solid var(--line);border-radius:4px;padding:12px}
+  .stat .cell .n{color:var(--accent);font-size:22px;font-weight:600}
+  .stat .cell .l{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+  /* inline live cursor */
+  .cursor{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:-2px;animation:blink 1.05s steps(2) infinite;margin-left:2px}
+  @keyframes blink{50%{opacity:0}}
+
+  /* focus glow on hover for project cards */
+  .proj{border:1px solid var(--line);border-radius:4px;padding:14px;background:#0d1110;transition:border-color .15s,transform .15s}
+  .proj:hover{border-color:#244236}
+  .proj h3{margin:0;font-size:14px;color:var(--fg);display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .proj h3 .repo{color:var(--accent)}
+  .proj h3 .stars{color:var(--accent-2);font-size:12px;font-weight:400}
+  .proj p{margin:6px 0 8px;color:var(--dim)}
+  .proj .langs{display:flex;flex-wrap:wrap;gap:4px}
+
+  /* contact form */
+  form{display:grid;gap:8px;max-width:480px}
+  input,textarea{font-family:inherit;font-size:13px;color:var(--fg);background:#0a0e0d;border:1px solid var(--line);border-radius:3px;padding:9px 10px;outline:none}
+  input:focus,textarea:focus{border-color:var(--accent)}
+  textarea{min-height:90px;resize:vertical}
+
+  /* status bar */
+  .statusbar{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;border-top:1px solid var(--line);background:#0a0e0d;color:var(--dim);font-size:11px}
+  .statusbar .left,.statusbar .right{display:flex;gap:14px;align-items:center}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;margin-right:6px}
+
+  /* small footer */
+  .footer{color:var(--dimmer);text-align:center;font-size:11px;margin:18px 0 30px}
+
+  /* subtle grain */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay;z-index:1}
+  .shell{position:relative;z-index:2}
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="term" role="application" aria-label="aaim.sh terminal portfolio">
+    <div class="term-bar">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <div class="term-title"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066b634667676f6b28756e">[email&#160;protected]</a> — zsh — 132×42</div>
+      <div class="term-tabs">
+        <span class="tab active">~</span>
+        <span class="tab">work</span>
+        <span class="tab">+</span>
+      </div>
+    </div>
+
+    <div class="term-body">
+
+      <!-- whoami / banner -->
+      <div class="row">
+        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e8858da889898185c69b80">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+        <span>whoami<span class="cursor"></span></span>
+      </div>
+
+      <pre class="ascii" aria-hidden="true" style="margin-top:14px">
+   █████╗  █████╗ ██╗███╗   ███╗   ███████╗██╗  ██╗
+  ██╔══██╗██╔══██╗██║████╗ ████║   ██╔════╝██║  ██║
+  ███████║███████║██║██╔████╔██║   ███████╗███████║
+  ██╔══██║██╔══██║██║██║╚██╔╝██║   ╚════██║██╔══██║
+  ██║  ██║██║  ██║██║██║ ╚═╝ ██║██╗███████║██║  ██║
+  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚═╝╚══════╝╚═╝  ╚═╝</pre>
+      <div class="ascii-sub">Abdulailah Al Hussayen</div>
+
+      <!-- neofetch block -->
+      <div class="neofetch">
+        <pre class="logo" aria-hidden="true">          .----.
+         /  ..  \
+        ( . __ . )
+         \  --  /
+          '----'
+         /||||||\
+        /_||||||_\</pre>
+        <div>
+          <div class="kv">
+            <span class="k">User</span><span class="v">Abdulailah Al Hussayen</span>
+            <span class="k">Host</span><span class="v">aaim.sh</span>
+            <span class="k">Role</span><span class="v">CTO @ Jaras.io <span class="dim">(hospitality SaaS, KSA)</span></span>
+            <span class="k">Location</span><span class="v">Riyadh, Saudi Arabia <span class="dim">· UTC+03</span></span>
+            <span class="k">Uptime</span><span class="v">8+ years shipping production backends</span>
+            <span class="k">Domains</span><span class="v">fintech · telecom · gov · hospitality</span>
+            <span class="k">Stack</span><span class="v">Python · Django · Go · Kafka · Postgres · k8s · GCP</span>
+            <span class="k">Shell</span><span class="v">/usr/bin/zsh — opinionated</span>
+            <span class="k">Status</span><span class="v"><span class="ok">● online</span> <span class="dim">— open to advisory & strategic conversations</span></span>
+          </div>
+          <div class="stat-strip" aria-label="track record">
+            <div class="stat"><span class="num">8+</span><span class="lbl">yrs in production</span></div>
+            <div class="stat"><span class="num">4</span><span class="lbl">regulated domains</span></div>
+            <div class="stat"><span class="num">24/7</span><span class="lbl">hospitality SaaS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- cat about.md -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="620f072203030b0f4c110a">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>cat about.md</span>
+        </div>
+        <div class="block box">
+          <p style="margin:0 0 8px"><span class="comment"># About</span></p>
+          <p style="margin:0 0 8px">I'm a software engineer who's spent the last <span class="em">8+ years</span> building the unglamorous, load-bearing parts of Saudi Arabia's digital infrastructure — payment rails, identity, regulated systems, and the back-of-house plumbing that businesses bet on.</p>
+          <p style="margin:0 0 8px">Today I'm <span class="em">CTO at Jaras.io</span>, a SaaS for hotel and serviced-apartment operators across KSA: unified booking dashboard, direct-booking sites, online payments, channel/OTA sync, and guest messaging.</p>
+          <p style="margin:0"><span class="comment"># I care about: correctness over cleverness · idempotency · observability · small APIs · teams that ship.</span></p>
+        </div>
+      </section>
+
+      <!-- ls projects -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81ece4c1e0e0e8ecaff2e9">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>ls -la ~/now</span>
+        </div>
+        <div class="block">
+          <div class="grid2">
+            <div class="proj">
+              <h3><span><span class="repo">jaras.io/</span> <span class="dim">— hospitality OS</span></span><span class="stars">★ now</span></h3>
+              <p>Multi-tenant SaaS for hotels & serviced apartments. Unified PMS, channel manager, direct-booking sites, payments, guest messaging.</p>
+              <div class="langs"><span class="tag">Django</span><span class="tag">HTMX</span><span class="tag">Temporal</span><span class="tag">Postgres</span><span class="tag">Redis</span><span class="tag">k8s</span><span class="tag">GCP</span></div>
+            </div>
+            <div class="proj">
+              <h3><span><span class="repo">channel-bridge/</span> <span class="dim">— OTA sync engine</span></span><span class="stars">★ shipping</span></h3>
+              <p>Two-way sync across Booking, Expedia, Agoda. Idempotent reservation pipeline, conflict resolution, audit log.</p>
+              <div class="langs"><span class="tag">Django</span><span class="tag">Temporal</span><span class="tag">Redis</span><span class="tag">OTA APIs</span></div>
+            </div>
+            <div class="proj">
+              <h3><span><span class="repo">direct-book/</span> <span class="dim">— booking websites</span></span><span class="stars">★ shipping</span></h3>
+              <p>Templated direct-booking sites with availability, dynamic pricing hooks, and SAR/USD checkout. Sub-second LCP.</p>
+            </div>
+            <div class="proj">
+              <h3><span><span class="repo">guest-inbox/</span> <span class="dim">— omnichannel messaging</span></span><span class="stars">★ shipping</span></h3>
+              <p>WhatsApp / SMS / email under one thread per stay. Templates, automations, and AR/EN handling out of the box.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- git log -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59890b594949c98db869d">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>git log --career --oneline</span>
+        </div>
+        <div class="block">
+          <div class="job">
+            <div class="meta"><span class="ok">● HEAD</span><span>2024 — present · Riyadh</span></div>
+            <div class="role">Chief Technology Officer <span class="at">@ Jaras.io</span></div>
+            <ul>
+              <li>Set technical direction for the platform: hotel & serviced-apartment SaaS used by operators across Saudi Arabia.</li>
+              <li>Built and lead an engineering team shipping the unified PMS, OTA channel manager, payments, and guest messaging.</li>
+              <li>Owner of architecture, infra, hiring, and the API contract with partners.</li>
+            </ul>
+            <div class="langs"><span class="tag">Django</span><span class="tag">HTMX</span><span class="tag">Temporal</span><span class="tag">Postgres</span><span class="tag">Redis</span><span class="tag">k8s</span><span class="tag">GCP</span></div>
+          </div>
+          <div class="job">
+            <div class="meta"><span class="dim">commit b3f24a1</span><span>Application Expert · ITBA — Imam Turki Royal Reserve Authority</span></div>
+            <div class="role">Application Expert <span class="at">@ ITBA</span></div>
+            <ul>
+              <li>Reservation engines for visitor permits + automated permit issuance pipeline.</li>
+              <li>Single sign-on and identity layer across internal authority systems.</li>
+              <li>Hardened government-grade audit + access controls.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="meta"><span class="dim">commit 9a712cd</span><span>Tweeq — digital wallet</span></div>
+            <div class="role">Backend Engineer <span class="at">@ Tweeq</span></div>
+            <ul>
+              <li>Integrated SARIE Instant Payment System with SAMA — real-time interbank transfers.</li>
+              <li>Owned wallet ledger, idempotency keys, dispute & reversal flows.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="meta"><span class="dim">commit 41dd0e8</span><span>neoleap — payments infrastructure</span></div>
+            <div class="role">Backend Engineer <span class="at">@ neoleap</span></div>
+            <ul>
+              <li>Built AML systems on Kafka — streaming rules, sanctions screening, alert review.</li>
+              <li>High-throughput, exactly-once event pipelines under regulator scrutiny.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="meta"><span class="dim">commit init</span><span>STC — telecom</span></div>
+            <div class="role">Engineer <span class="at">@ STC E-Channel</span></div>
+            <ul>
+              <li>E-channel services for Saudi Telecom — high-volume customer-facing APIs.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="meta"><span class="dim">commit root</span><span>2013 — 2018 · Dhahran</span></div>
+            <div class="role">B.Sc. Computer Science <span class="at">@ KFUPM</span></div>
+            <ul>
+              <li>King Fahd University of Petroleum &amp; Minerals — the foundations.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- domains -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b363e1b3a3a3236752833">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>tree --domains -L 1</span>
+        </div>
+        <div class="block box">
+<pre>
+.
+├── <span class="ok">fintech/</span>          <span class="comment"># SARIE/SAMA, AML on Kafka, wallet ledgers, payment rails</span>
+├── <span class="ok">telecom/</span>          <span class="comment"># STC e-channel — high-volume customer APIs</span>
+├── <span class="ok">government/</span>       <span class="comment"># ITBA — reservations, SSO, automated permits</span>
+└── <span class="ok">hospitality/</span>      <span class="comment"># Jaras.io — PMS, channels, payments, messaging</span>
+</pre>
+        </div>
+      </section>
+
+      <!-- stats -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="274a426746464e4a09544f">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>uptime</span>
+        </div>
+        <div class="block">
+          <div class="stat">
+            <div class="cell"><div class="n">8+</div><div class="l">years shipping</div></div>
+            <div class="cell"><div class="n">5</div><div class="l">domains</div></div>
+            <div class="cell"><div class="n">1</div><div class="l">SaaS led as CTO</div></div>
+            <div class="cell"><div class="n">∞</div><div class="l">on-call pages survived</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- contact -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59343c1938383034772a31">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>./contact --reason &lt;your-reason&gt;</span>
+        </div>
+        <div class="block grid2">
+          <div class="box">
+            <p style="margin:0 0 6px"><span class="comment"># direct</span></p>
+            <p style="margin:0 0 4px"><span class="key">email </span> <span class="dim">→</span> <a href="/cdn-cgi/l/email-protection#573a321736363e3a79243f"><span class="__cf_email__" data-cfemail="274a426746464e4a09544f">[email&#160;protected]</span></a></p>
+            <p style="margin:0 0 4px"><span class="key">phone </span> <span class="dim">→</span> <a href="tel:+96564458200">+966 5 644 58200</a></p>
+            <p style="margin:0 0 4px"><span class="key">domain</span> <span class="dim">→</span> <a href="https://aaim.sh">aaim.sh</a></p>
+            <p style="margin:0"><span class="key">company</span> <span class="dim">→</span> <a href="https://jaras.io">jaras.io</a></p>
+            <p style="margin:14px 0 6px"><span class="comment"># I'll respond to:</span></p>
+            <ul>
+              <li>Hospitality / payments / fintech architecture conversations</li>
+              <li>Advisory or fractional-CTO inquiries (selective)</li>
+              <li>Saudi market entry — engineering side</li>
+            </ul>
+          </div>
+          <div class="box">
+            <p style="margin:0 0 8px"><span class="comment"># or send a message</span></p>
+            <form onsubmit="event.preventDefault();this.querySelector('.send').textContent='> sent. I\\'ll reply from me@aaim.sh';this.querySelector('.send').classList.add('ok');">
+              <input required placeholder="from: name &lt;you@domain&gt;" />
+              <input required placeholder="subject:" />
+              <textarea required placeholder="body:"></textarea>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span class="comment send">↵ enter to send</span>
+                <button type="submit">send →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- exit -->
+      <div class="row" style="margin-top:18px">
+        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f626a4f6e6e6662217c67">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+        <span><span class="dim">_</span><span class="cursor"></span></span>
+      </div>
+    </div>
+
+    <div class="statusbar">
+      <div class="left">
+        <span><span class="pulse"></span>online</span>
+        <span>main ✓ clean</span>
+        <span>UTF-8</span>
+      </div>
+      <div class="right">
+        <span>aaim.sh</span>
+        <span>Riyadh · UTC+03</span>
+        <span id="clock">--:--:--</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">© <span id="yr"></span> Abdulailah Al Hussayen — built in vim, deployed on a tuesday</div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // live clock in Riyadh
+  function tick(){
+    const d = new Date();
+    const fmt = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'});
+    document.getElementById('clock').textContent = fmt.format(d);
+  }
+  tick(); setInterval(tick,1000);
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
