@@ -34,13 +34,13 @@
   .shell{max-width:1180px;margin:24px auto;padding:0 18px}
   .term{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 30px 80px -40px #000, inset 0 0 0 1px #ffffff04}
   .term-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(#13181600,#0e1211)}
-  .dots{display:flex;gap:6px}
+  .dots{display:flex;gap:6px;flex-shrink:0}
   .dot{width:10px;height:10px;border-radius:50%;background:#2a3230;border:1px solid #1a201e}
   .dot.r{background:#3a2422}
   .dot.y{background:#3a3322}
   .dot.g{background:#22382e}
-  .term-title{color:var(--dim);font-size:12px;letter-spacing:.04em;flex:1;text-align:center}
-  .term-tabs{display:flex;gap:4px}
+  .term-title{color:var(--dim);font-size:12px;letter-spacing:.04em;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .term-tabs{display:flex;gap:4px;flex-shrink:0}
   .tab{padding:3px 9px;font-size:11px;border:1px solid var(--line);border-radius:3px;color:var(--dim);cursor:pointer;user-select:none}
   .tab.active{color:var(--accent);border-color:#244236;background:#0f1c17}
   .tab:hover{color:var(--fg)}
@@ -68,7 +68,8 @@
   @media (max-width:780px){.grid2{grid-template-columns:1fr}}
 
   /* ASCII header */
-  .ascii{color:var(--accent);font-size:11px;line-height:1.15;white-space:pre;letter-spacing:0;overflow:hidden}
+  .ascii{color:var(--accent);font-size:11px;line-height:1.15;white-space:pre;letter-spacing:0;overflow:hidden;max-width:100%}
+  .ascii-mobile{display:none;color:var(--accent);font-size:34px;font-weight:700;letter-spacing:.04em;margin-top:8px;line-height:1.1}
   .ascii-sub{color:var(--dim);margin-top:6px}
 
   /* neofetch-style */
@@ -76,7 +77,7 @@
   .neofetch .logo{color:var(--accent);white-space:pre;font-size:11px;line-height:1.15}
   .kv{display:grid;grid-template-columns:max-content 1fr;column-gap:14px;row-gap:2px}
   .kv .k{color:var(--accent-2)}
-  .kv .v{color:var(--fg)}
+  .kv .v{color:var(--fg);min-width:0;word-break:break-word}
   .stat-strip{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;font-size:12px}
   .stat-strip .stat{display:flex;flex-direction:column;gap:2px;padding-right:18px;border-right:1px solid #1c2220}
   .stat-strip .stat:last-child{border-right:none;padding-right:0}
@@ -117,29 +118,92 @@
   /* focus glow on hover for project cards */
   .proj{border:1px solid var(--line);border-radius:4px;padding:14px;background:#0d1110;transition:border-color .15s,transform .15s}
   .proj:hover{border-color:#244236}
-  .proj h3{margin:0;font-size:14px;color:var(--fg);display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .proj h3{margin:0;font-size:14px;color:var(--fg);display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
   .proj h3 .repo{color:var(--accent)}
-  .proj h3 .stars{color:var(--accent-2);font-size:12px;font-weight:400}
+  .proj h3 .stars{color:var(--accent-2);font-size:12px;font-weight:400;flex-shrink:0}
   .proj p{margin:6px 0 8px;color:var(--dim)}
   .proj .langs{display:flex;flex-wrap:wrap;gap:4px}
 
   /* contact form */
   form{display:grid;gap:8px;max-width:480px}
-  input,textarea{font-family:inherit;font-size:13px;color:var(--fg);background:#0a0e0d;border:1px solid var(--line);border-radius:3px;padding:9px 10px;outline:none}
+  input,textarea{font-family:inherit;font-size:16px;color:var(--fg);background:#0a0e0d;border:1px solid var(--line);border-radius:3px;padding:10px 12px;outline:none;width:100%;min-width:0}
   input:focus,textarea:focus{border-color:var(--accent)}
-  textarea{min-height:90px;resize:vertical}
+  textarea{min-height:100px;resize:vertical}
 
   /* status bar */
-  .statusbar{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;border-top:1px solid var(--line);background:#0a0e0d;color:var(--dim);font-size:11px}
-  .statusbar .left,.statusbar .right{display:flex;gap:14px;align-items:center}
+  .statusbar{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;border-top:1px solid var(--line);background:#0a0e0d;color:var(--dim);font-size:11px;flex-wrap:wrap}
+  .statusbar .left,.statusbar .right{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
   .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;margin-right:6px}
 
   /* small footer */
-  .footer{color:var(--dimmer);text-align:center;font-size:11px;margin:18px 0 30px}
+  .footer{color:var(--dimmer);text-align:center;font-size:11px;margin:18px 0 30px;padding:0 14px}
 
   /* subtle grain */
   body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay;z-index:1}
   .shell{position:relative;z-index:2}
+
+  /* ============ MOBILE ============ */
+  @media (max-width:780px){
+    html,body{font-size:13.5px;line-height:1.6}
+    .shell{margin:0;padding:0}
+    .term{border-radius:0;border-left:none;border-right:none;border-top:none;box-shadow:none}
+    .term-bar{padding:9px 12px;gap:8px}
+    .term-title{font-size:11px}
+    .term-tabs{display:none}
+    .term-body{padding:18px 14px 28px;min-height:0}
+    section{margin:24px 0}
+    .block{margin:10px 0}
+    .box{padding:12px 14px}
+
+    /* Banner: hide ASCII art, show wordmark */
+    pre.ascii{display:none}
+    .ascii-mobile{display:block}
+
+    /* Neofetch: stack logo on top, smaller */
+    .neofetch{grid-template-columns:1fr;gap:14px;margin-top:14px}
+    .neofetch .logo{font-size:10px;text-align:center;opacity:.7}
+    /* KV becomes a label-above-value list so long values don't squish */
+    .kv{grid-template-columns:1fr;row-gap:8px}
+    .kv .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-top:4px}
+    .kv .k:first-child{margin-top:0}
+    .kv .v{padding-left:0}
+    .stat-strip{gap:0;font-size:11px}
+    .stat-strip .stat{padding-right:12px;margin-right:12px}
+    .stat-strip .num{font-size:13px}
+
+    /* Section headers: long prompt + command can clip — let the row wrap naturally */
+    .row{flex-wrap:wrap;gap:6px}
+    .row .prompt-line{white-space:nowrap}
+
+    /* Job meta: stack the right-side label below */
+    .job{padding:0 0 16px 14px}
+    .job .meta{font-size:11px;flex-direction:column;gap:2px;align-items:flex-start}
+    .job ul{padding-left:16px}
+
+    /* Project header: stars drop below repo name */
+    .proj h3{flex-direction:column;align-items:flex-start;gap:4px}
+    .proj h3 .stars{font-size:11px}
+
+    /* tree pre block — smaller font + tighter pad so it doesn't h-scroll */
+    .block.box pre{font-size:11px;line-height:1.5;overflow-x:auto;padding-bottom:4px}
+
+    /* uptime stat grid — already responsive via .stat 2-col rule, but bump pad down */
+    .stat .cell{padding:10px}
+    .stat .cell .n{font-size:18px}
+
+    /* Buttons + form */
+    button{padding:9px 14px;font-size:14px}
+    .term-body form{max-width:none}
+
+    /* Status bar: stack the two halves */
+    .statusbar{flex-direction:column;align-items:flex-start;font-size:10.5px;gap:4px;padding:8px 12px}
+    .statusbar .left,.statusbar .right{gap:10px}
+  }
+  @media (max-width:380px){
+    .ascii-mobile{font-size:28px}
+    .term-body{padding:16px 12px 24px}
+    .stat-strip .stat{padding-right:10px;margin-right:10px}
+  }
 
 </style>
 </head>
@@ -148,7 +212,7 @@
   <div class="term" role="application" aria-label="aaim.sh terminal portfolio">
     <div class="term-bar">
       <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-      <div class="term-title"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066b634667676f6b28756e">[email&#160;protected]</a> — zsh — 132×42</div>
+      <div class="term-title"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82efe7c2e3e3ebefacf1ea">[email&#160;protected]</a> — zsh — 132×42</div>
       <div class="term-tabs">
         <span class="tab active">~</span>
         <span class="tab">work</span>
@@ -160,7 +224,7 @@
 
       <!-- whoami / banner -->
       <div class="row">
-        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e8858da889898185c69b80">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b565e7b5a5a5256154853">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
         <span>whoami<span class="cursor"></span></span>
       </div>
 
@@ -171,6 +235,7 @@
   ██╔══██║██╔══██║██║██║╚██╔╝██║   ╚════██║██╔══██║
   ██║  ██║██║  ██║██║██║ ╚═╝ ██║██╗███████║██║  ██║
   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚═╝╚══════╝╚═╝  ╚═╝</pre>
+      <div class="ascii-mobile" aria-hidden="true">aaim.sh</div>
       <div class="ascii-sub">Abdulailah Al Hussayen</div>
 
       <!-- neofetch block -->
@@ -205,7 +270,7 @@
       <!-- cat about.md -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="620f072203030b0f4c110a">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cda0a88dacaca4a0e3bea5">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>cat about.md</span>
         </div>
         <div class="block box">
@@ -219,7 +284,7 @@
       <!-- ls projects -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81ece4c1e0e0e8ecaff2e9">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3558507554545c581b465d">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>ls -la ~/now</span>
         </div>
         <div class="block">
@@ -249,7 +314,7 @@
       <!-- git log -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59890b594949c98db869d">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cca1a98cadada5a1e2bfa4">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>git log --career --oneline</span>
         </div>
         <div class="block">
@@ -308,7 +373,7 @@
       <!-- domains -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b363e1b3a3a3236752833">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="90fdf5d0f1f1f9fdbee3f8">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>tree --domains -L 1</span>
         </div>
         <div class="block box">
@@ -325,7 +390,7 @@
       <!-- stats -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="274a426746464e4a09544f">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3a575f7a5b5b5357144952">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>uptime</span>
         </div>
         <div class="block">
@@ -341,13 +406,13 @@
       <!-- contact -->
       <section>
         <div class="row">
-          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59343c1938383034772a31">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc9199bc9d9d9591d28f94">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
           <span>./contact --reason &lt;your-reason&gt;</span>
         </div>
         <div class="block grid2">
           <div class="box">
             <p style="margin:0 0 6px"><span class="comment"># direct</span></p>
-            <p style="margin:0 0 4px"><span class="key">email </span> <span class="dim">→</span> <a href="/cdn-cgi/l/email-protection#573a321736363e3a79243f"><span class="__cf_email__" data-cfemail="274a426746464e4a09544f">[email&#160;protected]</span></a></p>
+            <p style="margin:0 0 4px"><span class="key">email </span> <span class="dim">→</span> <a href="/cdn-cgi/l/email-protection#b5d8d0f5d4d4dcd89bc6dd"><span class="__cf_email__" data-cfemail="93fef6d3f2f2fafebde0fb">[email&#160;protected]</span></a></p>
             <p style="margin:0 0 4px"><span class="key">phone </span> <span class="dim">→</span> <a href="tel:+96564458200">+966 5 644 58200</a></p>
             <p style="margin:0 0 4px"><span class="key">domain</span> <span class="dim">→</span> <a href="https://aaim.sh">aaim.sh</a></p>
             <p style="margin:0"><span class="key">company</span> <span class="dim">→</span> <a href="https://jaras.io">jaras.io</a></p>
@@ -375,7 +440,7 @@
 
       <!-- exit -->
       <div class="row" style="margin-top:18px">
-        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f626a4f6e6e6662217c67">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+        <span class="prompt-line"><span class="prompt"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f29f97b293939b9fdc819a">[email&#160;protected]</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
         <span><span class="dim">_</span><span class="cursor"></span></span>
       </div>
     </div>
