@@ -73,8 +73,7 @@
   .ascii-sub{color:var(--dim);margin-top:6px}
 
   /* neofetch-style */
-  .neofetch{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;margin-top:18px}
-  .neofetch .logo{color:var(--accent);white-space:pre;font-size:11px;line-height:1.15}
+  .neofetch{margin-top:18px}
   .kv{display:grid;grid-template-columns:max-content 1fr;column-gap:14px;row-gap:2px}
   .kv .k{color:var(--accent-2)}
   .kv .v{color:var(--fg);min-width:0;word-break:break-word}
@@ -155,13 +154,12 @@
     .block{margin:10px 0}
     .box{padding:12px 14px}
 
-    /* Banner: hide ASCII art, show wordmark */
-    pre.ascii{display:none}
-    .ascii-mobile{display:block}
+    /* Banner: scale the ASCII portrait so it fits */
+    pre.ascii{font-size:clamp(5px, calc((100vw - 32px) / 33), 11px);line-height:1.1;text-align:center}
+    .ascii-mobile{display:none}
 
     /* Neofetch: stack logo on top, smaller */
-    .neofetch{grid-template-columns:1fr;gap:14px;margin-top:14px}
-    .neofetch .logo{font-size:10px;text-align:center;opacity:.7}
+    .neofetch{margin-top:14px}
     /* KV becomes a label-above-value list so long values don't squish */
     .kv{grid-template-columns:1fr;row-gap:8px}
     .kv .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-top:4px}
@@ -262,13 +260,6 @@ W&&&WWW&&&&&WW###x-;::::..:.``:;;;`;:-*WWWWWW#WW##QXXQzO
 
       <!-- neofetch block -->
       <div class="neofetch">
-        <pre class="logo" aria-hidden="true">          .----.
-         /  ..  \
-        ( . __ . )
-         \  --  /
-          '----'
-         /||||||\
-        /_||||||_\</pre>
         <div>
           <div class="kv">
             <span class="k">User</span><span class="v">Abdulailah Al Hussayen</span>
@@ -300,6 +291,23 @@ W&&&WWW&&&&&WW###x-;::::..:.``:;;;`;:-*WWWWWW#WW##QXXQzO
           <p style="margin:0 0 8px">I'm a software engineer who's spent the last <span class="em">8+ years</span> building the unglamorous, load-bearing parts of Saudi Arabia's digital infrastructure — payment rails, identity, regulated systems, and the back-of-house plumbing that businesses bet on.</p>
           <p style="margin:0 0 8px">Today I'm <span class="em">CTO at Jaras.io</span>, a SaaS for hotel and serviced-apartment operators across KSA: unified booking dashboard, direct-booking sites, online payments, channel/OTA sync, and guest messaging.</p>
           <p style="margin:0"><span class="comment"># I care about: correctness over cleverness · idempotency · observability · small APIs · teams that ship.</span></p>
+        </div>
+      </section>
+
+      <!-- cat contact (quick) -->
+      <section>
+        <div class="row">
+          <span class="prompt-line"><span class="prompt"><a href="mailto:me@aaim.sh">me@aaim.sh</a></span> <span class="arrow">~</span> <span class="path">$</span></span>
+          <span>cat ~/contact</span>
+        </div>
+        <div class="block box">
+          <div class="kv" style="row-gap:4px">
+            <span class="k">email</span><span class="v"><a href="mailto:me@aaim.sh">me@aaim.sh</a></span>
+            <span class="k">phone</span><span class="v"><a href="tel:+96564458200">+966 5 644 58200</a></span>
+            <span class="k">domain</span><span class="v"><a href="https://aaim.sh">aaim.sh</a></span>
+            <span class="k">company</span><span class="v"><a href="https://jaras.io">jaras.io</a></span>
+          </div>
+          <p style="margin:12px 0 0"><span class="comment"># scroll for the full form, or just reply.</span></p>
         </div>
       </section>
 
@@ -433,17 +441,15 @@ W&&&WWW&&&&&WW###x-;::::..:.``:;;;`;:-*WWWWWW#WW##QXXQzO
         </div>
         <div class="block grid2">
           <div class="box">
-            <p style="margin:0 0 6px"><span class="comment"># direct</span></p>
-            <p style="margin:0 0 4px"><span class="key">email </span> <span class="dim">→</span> <a href="mailto:me@aaim.sh">me@aaim.sh</a></p>
-            <p style="margin:0 0 4px"><span class="key">phone </span> <span class="dim">→</span> <a href="tel:+96564458200">+966 5 644 58200</a></p>
-            <p style="margin:0 0 4px"><span class="key">domain</span> <span class="dim">→</span> <a href="https://aaim.sh">aaim.sh</a></p>
-            <p style="margin:0"><span class="key">company</span> <span class="dim">→</span> <a href="https://jaras.io">jaras.io</a></p>
-            <p style="margin:14px 0 6px"><span class="comment"># I'll respond to:</span></p>
+            <p style="margin:0 0 6px"><span class="comment"># I'll respond to:</span></p>
             <ul>
               <li>Hospitality / payments / fintech architecture conversations</li>
               <li>Advisory or fractional-CTO inquiries (selective)</li>
               <li>Saudi market entry — engineering side</li>
             </ul>
+            <p style="margin:14px 0 6px"><span class="comment"># direct</span></p>
+            <p style="margin:0 0 4px"><span class="key">email </span> <span class="dim">→</span> <a href="mailto:me@aaim.sh">me@aaim.sh</a></p>
+            <p style="margin:0"><span class="key">phone </span> <span class="dim">→</span> <a href="tel:+96564458200">+966 5 644 58200</a></p>
           </div>
           <div class="box">
             <p style="margin:0 0 8px"><span class="comment"># or send a message</span></p>
@@ -484,7 +490,7 @@ W&&&WWW&&&&&WW###x-;::::..:.``:;;;`;:-*WWWWWW#WW##QXXQzO
   <div class="footer">© <span id="yr"></span> Abdulailah Al Hussayen — built in vim, deployed on a tuesday</div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // live clock in Riyadh
   function tick(){
     const d = new Date();
